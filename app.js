@@ -5,6 +5,9 @@ import express from 'express';
 import cors from 'cors';
 import connectDB from './config/db.js';
 import authRoutes from './routes/auth.routes.js';
+import eventRoutes from './routes/event.routes.js';
+import pickRoutes from './routes/pick.routes.js';
+import specialRequestRoutes from './routes/specialRequest.routes.js';
 
 const app = express();
 
@@ -31,3 +34,6 @@ const startConnection = async () => {
 startConnection();
 
 app.use('/api/auth', authRoutes);
+app.use('/api/event', eventRoutes);
+app.use('/api/pick', pickRoutes);
+app.use('/api/special', specialRequestRoutes);

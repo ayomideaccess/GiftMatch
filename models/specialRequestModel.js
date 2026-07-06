@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import validator from 'validator';
 
 const specialRequestSchema = new Schema({
     eventId:{
@@ -13,7 +14,7 @@ const specialRequestSchema = new Schema({
     emailAdd:{
         type: String,
         validate: {
-            validator: isEmail.validate,
+            validator: validator.isEmail,
             message: "Please enter a valid email address"
         }
     },
