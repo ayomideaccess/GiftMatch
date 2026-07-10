@@ -36,4 +36,4 @@ startConnection();
 app.use('/api/auth', authRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/pick', pickRoutes);
-app.use('/api/special', specialRequestRoutes);
+app.use('/api/special-requests', specialRequestRoutes);

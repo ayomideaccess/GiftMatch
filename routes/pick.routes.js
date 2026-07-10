@@ -6,6 +6,6 @@ import { identifyParticipant, makePick, viewResults } from '../controller/pick.c
 
 router.post('/:eventId/identify', identifyParticipant);
 router.post('/:eventId/pick', makePick);
-router.get('/:eventId/results', viewResults);
+router.get('/:eventId/results',protect, viewResults);
 
 export default router;
