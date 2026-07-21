@@ -25,7 +25,7 @@ const createEvent = async (req,res) =>{
 
 const getAllEvents = async (req,res) =>{
     try{
-        const events = await Event.find().populate('createdBy', 'firstName lastName email');
+        const events = await Event.find({ createdBy: req.admin._id }).populate('createdBy', 'firstName lastName email');
         res.status(200).json(events);
     } catch(error){
         res.status(500).json({ message: 'Error fetching events', error: error.message });
@@ -48,7 +48,7 @@ const getEventById = async (req, res) =>{
 const updateEvent = async (req, res) =>{
     try {
         const { id } = req.params;
-        const event = await Event.findByIdAndUpdate(id, req.body, { new: true, runValidators: true });
+        const event = await Event.findOneAndUpdate({_id: id, createdBy: req.admin._id}, req.body, { new: true, runValidators: true });
         if(!event){
             return res.status(404).json({ message: 'Event not found' })
         }
@@ -61,7 +61,7 @@ const updateEvent = async (req, res) =>{
 const deleteEvent = async (req, res) =>{
     try {
         const { id } = req.params;
-        const event = await Event.findByIdAndDelete(id);
+        const event = await Event.findOneAndDelete({ id, createdAt: req.admin._id });
         if(!event){
             return res.status(404).json({ message: 'Event not found' })
         }

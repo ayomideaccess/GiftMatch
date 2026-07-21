@@ -41,6 +41,7 @@ const makePick = async (req,res) =>{
     try {
         const { eventId } = req.params;
         const { pickerName, pickedParticipant, pickedName } = req.body;
+        const pickedParticipantId = req.body.pickedParticipant._id;
 
         const event = await Event.findById(eventId);
         if(!event){
@@ -61,7 +62,7 @@ const makePick = async (req,res) =>{
         }
         const alreadyPicked = await Pick.findOne({ eventId, pickerName });
         if (alreadyPicked){
-            return res.status(400).json({ message:"You already picked", pickedName: existingPick.pickedName });
+            return res.status(400).json({ message:"You already picked", pickedName: alreadyPicked.pickedName });
         }
 
         const targetParticipant = event.participants.id(pickedParticipantId);
@@ -75,15 +76,43 @@ const makePick = async (req,res) =>{
             return res.json({ message: "You cannot pick yourself" });
         }
 
-        targetParticipant.isPicked = true;
-        await event.save();
+        const updatedEvent = await Event.findOneAndUpdate(
+            {
+                _id: eventId,
+                "participants._id": pickedParticipantId,
+                "participants.isPicked": false
+            },
+            {
+                $set: {
+                    "participants.$.isPicked": true
+                }
+            },
+            { new: true }
+        );
 
+        if (!updatedEvent) {
+            return res.status(400).json({
+                message: "This participant has already been picked."
+            });
+        }
         await Pick.create({
             eventId,
             pickerName,
             pickedParticipantId,
             pickedName
         });
+
+        await Event.updateOne(
+            {
+                _id: eventId,
+                "participants._id": pickedParticipantId
+            },
+            {
+                $set: {
+                    "participants.$.pickedBy": pick._id
+                }
+            }
+        );
 
         const allPicked = event.participants.every(p => p.isPicked);
         if (allPicked) {
