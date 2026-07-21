@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
 const participantSchema = new Schema({
-    name:{type: String, required: true},
+    name:{type: String, required: true, trim: true},
     isPicked:{type: Boolean, required: true, default: false},
     pickedBy:{
         type: mongoose.Schema.Types.ObjectId,
