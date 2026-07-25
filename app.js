@@ -8,6 +8,7 @@ import authRoutes from './routes/auth.routes.js';
 import eventRoutes from './routes/event.routes.js';
 import pickRoutes from './routes/pick.routes.js';
 import specialRequestRoutes from './routes/specialRequest.routes.js';
+import errorHandler from './middleware/errorHandler.js';
 
 const app = express();
 
@@ -37,3 +38,5 @@ app.use('/api/auth', authRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/pick', pickRoutes);
 app.use('/api/special-requests', specialRequestRoutes);
+
+app.use(errorHandler);
