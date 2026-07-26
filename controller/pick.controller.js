@@ -60,7 +60,7 @@ const makePick = async (req,res) =>{
         throw new AppError(`You already picked ${alreadyPicked.pickedName}`, 400);
     }
 
-    const targetParticipant = event.participants.find(pickedParticipantId);
+    const targetParticipant = event.participants.find({pickedParticipantId});
     if (!targetParticipant){
         throw new AppError("Participant not found", 404);
     }
@@ -91,7 +91,7 @@ const makePick = async (req,res) =>{
     await Pick.create({
         eventId,
         pickerName,
-        pickedParticipantId,
+        pickedParticipant,
         pickedName
     });
 

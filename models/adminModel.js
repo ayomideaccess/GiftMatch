@@ -37,6 +37,9 @@ const adminSchema = new Schema({
         type: Boolean,
         default: false
     },
+    newPassword:{
+        type: String
+    },
     passwordResetOTP:{
         type: String
     },

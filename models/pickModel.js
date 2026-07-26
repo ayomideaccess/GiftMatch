@@ -2,7 +2,7 @@ import mongoose, { Schema } from "mongoose";
 
 const pickSchema = new Schema({
     eventId:{
-        type: Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
         required: true
     },
@@ -10,8 +10,8 @@ const pickSchema = new Schema({
         type: String,
         required: true
     },
-    pickedParticipantId:{
-        type: Schema.Types.ObjectId,
+    pickedParticipant:{
+        type: String,
         required: true
     },
     pickedName:{

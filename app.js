@@ -9,6 +9,8 @@ import eventRoutes from './routes/event.routes.js';
 import pickRoutes from './routes/pick.routes.js';
 import specialRequestRoutes from './routes/specialRequest.routes.js';
 import errorHandler from './middleware/errorHandler.js';
+import routeHandler from './middleware/routeHandler.js';
+import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
@@ -34,9 +36,13 @@ const startConnection = async () => {
 }
 startConnection();
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.use('/api/auth', authRoutes);
 app.use('/api/event', eventRoutes);
 app.use('/api/pick', pickRoutes);
 app.use('/api/special-requests', specialRequestRoutes);
+
+app.use(routeHandler);
 
 app.use(errorHandler);
