@@ -35,8 +35,7 @@ const identifyParticipant = async (req,res) =>{
 
 const makePick = async (req,res) =>{
     const { eventId } = req.params;
-    const { pickerName, pickedParticipant, pickedName } = req.body;
-    const pickedParticipantId = req.body.pickedParticipant._id;
+    const { pickerName, pickedParticipantId} = req.body;
 
     const event = await Event.findById(eventId);
     if(!event){
@@ -60,15 +59,15 @@ const makePick = async (req,res) =>{
         throw new AppError(`You already picked ${alreadyPicked.pickedName}`, 400);
     }
 
-    const targetParticipant = event.participants.find({pickedParticipantId});
+    const targetParticipant = event.participants.find(p => p._id.toString() === pickedParticipantId);
     if (!targetParticipant){
         throw new AppError("Participant not found", 404);
     }
     if (targetParticipant.isPicked){
         throw new AppError("This person has already been picked", 400);
     }
-    if (pickerName.toLowerCase() === pickedName.toLowerCase()){
-        throw new AppError("You cannot pick yourself");
+    if (pickerName.toLowerCase() === targetParticipant.name.toLowerCase()){
+        throw new AppError("You cannot pick yourself", 400);
     }
 
     const updatedEvent = await Event.findOneAndUpdate(
@@ -91,8 +90,8 @@ const makePick = async (req,res) =>{
     await Pick.create({
         eventId,
         pickerName,
-        pickedParticipant,
-        pickedName
+        pickedParticipantId,
+        pickedName: targetParticipant.name
     });
 
     await Event.updateOne(
@@ -102,18 +101,18 @@ const makePick = async (req,res) =>{
         },
         {
             $set: {
-                "participants.$.pickedBy": pickerName._id
+                "participants.$.pickedBy": pickerExists._id
             }
         }
     );
 
-    const allPicked = event.participants.every(p => p.isPicked);
+    const allPicked = updatedEvent.participants.every(p => p.isPicked);
     if (allPicked) {
         const admin = await Admin.findById(event.createdBy);
         await sendEventCompletionEmail(admin.email, event.title);
     }
 
-    res.status(201).json({ message: `You have successfully picked ${pickedName}` })
+    res.status(201).json({ message: `You have successfully picked ${targetParticipant.name}` })
 }
 
 const viewResults = async (req,res) =>{

@@ -7,6 +7,5 @@ export const identifySchema = z.object({
 
 export const makePickSchema = z.object({
     pickerName: z.string().trim().min(3),
-    pickedParticipant: z.string().trim().min(3),
-    pickedName: z.string().trim().min(3)
+    pickedParticipantId: z.string().trim().min(3)
 })

@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { sendOTPEmail, sendLoginEmail, sendPasswordResetEmail } from '../services/email.service.js';
 import { generateOTP } from '../services/otp.service.js'; 
 import Admin from '../models/adminModel.js';
-import generateToken from '../utils/generateToken.js';
+import { generateAccessToken, generateRefreshToken } from '../utils/generateToken.js';
 import AppError from '../utils/AppError.js';
 
 const registerUser = async (req, res) => {
@@ -81,13 +81,22 @@ const loginUser = async(req, res) => {
         throw new AppError("Invalid credentials",400);
     }
 
-    const token = generateToken(admin._id);
+    const accessToken = generateAccessToken(admin._id);
+    const refreshToken = generateRefreshToken(admin._id);
 
     await sendLoginEmail(email, admin.firstName);
-    res.status(200).json({message: "Login successful", token});
+    res.cookie("refreshToken", refreshToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 7 * 24 * 60 * 60 * 1000
+    });
+
+    res.status(200).json({message: "Login successful", accessToken});
 }
 
 const logoutUser = async(req, res) => {
+    res.clearCookie("refreshToken");
     res.status(200).json({message: "Logout successful"});
 }
 
@@ -152,6 +161,27 @@ const resendOTP = async(req,res) => {
 
     await sendOTPEmail(email,otp);
     res.status(200).json({ message: "Check your email for OTP" });
-}
+};
 
-export { registerUser, forgottenPassword, verifyOTP, loginUser, logoutUser, resetPassword, resendOTP };
+const refreshToken = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    throw new AppError("Refresh token not found", 401);
+  }
+
+  const decoded = jwt.verify(
+    refreshToken,
+    process.env.REFRESH_TOKEN_SECRET
+  );
+
+  const accessToken = generateAccessToken(decoded.id);
+
+  return res.status(200).json({
+    success: true,
+    message: "Access token refreshed successfully",
+    accessToken,
+  });
+};
+
+export { registerUser, forgottenPassword, verifyOTP, loginUser, logoutUser, resetPassword, resendOTP, refreshToken };

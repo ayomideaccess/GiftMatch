@@ -10,8 +10,8 @@ const pickSchema = new Schema({
         type: String,
         required: true
     },
-    pickedParticipant:{
-        type: String,
+    pickedParticipantId:{
+        type: mongoose.Schema.Types.ObjectId,
         required: true
     },
     pickedName:{

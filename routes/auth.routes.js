@@ -3,7 +3,7 @@ import express from 'express';
 const router = express.Router();
 
 // Importing authentication controller functions
-import { registerUser, verifyOTP, loginUser, logoutUser, forgottenPassword, resetPassword, resendOTP } from '../controller/auth.controller.js';
+import { registerUser, verifyOTP, loginUser, logoutUser, forgottenPassword, resetPassword, resendOTP, refreshToken } from '../controller/auth.controller.js';
 import validate from '../middleware/validate.js';
 import { registerSchema, loginSchema, verifyOtpSchema, forgottenPasswordSchema,resetPasswordSchema, resendOTPSchema  } from '../validators/auth.validator.js';
 
@@ -251,5 +251,36 @@ router.post('/reset', validate(resetPasswordSchema), resetPassword);
  *         description: Internal server error
  */
 router.post('/resend', validate(resendOTPSchema), resendOTP);
+
+/**
+ * @swagger
+ * /api/auth/refresh-token:
+ *   post:
+ *     summary: Refresh access token
+ *     tags: [Authentication]
+ *     description: Generates a new access token using the refresh token stored in an httpOnly cookie.
+ *     responses:
+ *       200:
+ *         description: Access token refreshed successfully.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: Access token refreshed successfully
+ *                 accessToken:
+ *                   type: string
+ *                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+ *       401:
+ *         description: Refresh token is missing, invalid, or expired.
+ *       500:
+ *         description: Internal server error.
+ */
+router.post('/refresh-token', refreshToken);
 
 export default router;
