@@ -88,7 +88,13 @@ router.get('/:id', getEventById);
  *     tags:
  *       - Events
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: []  
+ *     requestBody:     
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
  *     parameters:
  *       - in: path
  *         name: id

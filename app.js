@@ -16,7 +16,14 @@ import { swaggerUi, swaggerSpec } from './config/swagger.js';
 const app = express();
 
 // Middleware
-app.use(cors());
+const allowedOrigins = [
+    process.env.FRONTEND_URL || 'http://localhost:5500'
+];
+const corsOptions = {
+    origin: allowedOrigins,
+    credentials: true
+};
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
