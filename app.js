@@ -15,6 +15,8 @@ import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
+app.get('/ping', (req,res) => res.send('pong'));
+
 // Middleware
 const allowedOrigins = [
     'https://gift-match-front-end.vercel.app' || 'http://localhost:5500'
