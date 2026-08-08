@@ -1,20 +1,28 @@
 import dotenv from 'dotenv';
 dotenv.config();
 
-import nodemailer from 'nodemailer';
+import { Resend } from 'resend';
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
-    auth:{
-        user: process.env.GMAIL_USER,
-        pass: process.env.GMAIL_PASS
-    }
-});
+const resend = new Resend(process.env.RESEND_API_KEY);
+
+// Send OTP
+export const sendOTPEmail = async (email, otp) =>{
+    await resend.emails.send({
+        from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
+        to: email,
+        subject: 'Your OTP for GiftMatch',
+        html: `
+        <h2>Welcome to GiftMatch!</h2>
+        <p>Your OTP for verification is:</p>
+        <h1 style="color: #6366f1">${otp}</h1>
+        `
+    });
+};
 
 
 // Send OTP
 export const sendOTPEmail = async (email, otp) =>{
-    await transporter.sendMail({
+    await resend.emails.send({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'Your OTP for GiftMatch',
@@ -29,7 +37,7 @@ export const sendOTPEmail = async (email, otp) =>{
 };
 
 export const sendLoginEmail = async (email, firstName)=>{
-    await transporter.sendMail({
+    await resend.emails.send({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'New login to your GiftMatch account',
@@ -42,7 +50,7 @@ export const sendLoginEmail = async (email, firstName)=>{
 };
 
 export const sendPasswordResetEmail = async (email, passwordResetOTP)=>{
-    await transporter.sendMail({
+    await resend.emails.send({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'Password Reset Request',
