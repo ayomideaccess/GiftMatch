@@ -15,10 +15,10 @@ import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
-app.use((res, req, next) => {  
-    console.log('>>> INCOMING REQUEST:', req.method, req.url);
-    next();
-});
+// app.use((res, req, next) => {  
+//     console.log('>>> INCOMING REQUEST:', req.method, req.url);
+//     next();
+// });
 app.get('/ping', (req,res) => res.send('pong'));
 
 // Middleware
