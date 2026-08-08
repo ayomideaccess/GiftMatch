@@ -84,7 +84,7 @@ const loginUser = async(req, res) => {
     const accessToken = generateAccessToken(admin._id);
     const refreshToken = generateRefreshToken(admin._id);
 
-    await sendLoginEmail(email, admin.firstName);
+    // await sendLoginEmail(email, admin.firstName);
     res.cookie("refreshToken", refreshToken, {
         httpOnly: true,
         secure: process.env.NODE_ENV === "production",
