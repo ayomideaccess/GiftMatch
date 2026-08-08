@@ -66,7 +66,7 @@ export const sendPasswordResetEmail = async (email, passwordResetOTP)=>{
 };
 
 export const sendSpecialRequestEmail = async (email, requesterName, wantToGift, reason, phone, emailAdd)=>{
-    await transporter.sendMail({
+    await resend.emails.send({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'Special Request Received',
@@ -82,7 +82,7 @@ export const sendSpecialRequestEmail = async (email, requesterName, wantToGift, 
 };
 
 export const sendEventCompletionEmail = async (email, eventName)=>{
-    await transporter.sendMail({
+    await resend.emails.send({
         from: `"GiftMatch" <${process.env.GMAIL_USER}>`,
         to: email,
         subject: 'Event Completed Successfully🎉',
