@@ -17,7 +17,7 @@ const app = express();
 
 // Middleware
 const allowedOrigins = [
-    process.env.FRONTEND_URL || 'http://localhost:5500'
+    'https://gift-match-front-end.vercel.app' || 'http://localhost:5500'
 ];
 const corsOptions = {
     origin: allowedOrigins,
