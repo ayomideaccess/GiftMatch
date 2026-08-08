@@ -15,21 +15,16 @@ import { swaggerUi, swaggerSpec } from './config/swagger.js';
 
 const app = express();
 
-// app.use((res, req, next) => {  
-//     console.log('>>> INCOMING REQUEST:', req.method, req.url);
-//     next();
-// });
-app.get('/ping', (req,res) => res.send('pong'));
 
 // Middleware
 const allowedOrigins = [
-    'https://gift-match-front-end.vercel.app' || 'http://localhost:5500'
+    'https://gift-match-front-end.vercel.app', 'http://localhost:5500'
 ];
 const corsOptions = {
     origin: allowedOrigins,
     credentials: true
 };
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 
